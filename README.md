@@ -37,12 +37,49 @@
 Предварительная подготовка к установке и запуску Kubernetes кластера.
 
 1. Создайте сервисный аккаунт, который будет в дальнейшем использоваться Terraform для работы с инфраструктурой с необходимыми и достаточными правами. Не стоит использовать права суперпользователя
-2. Подготовьте [backend](https://www.terraform.io/docs/language/settings/backends/index.html) для Terraform:  
+![1](https://github.com/joos-net/devops-diplom/blob/main/img/01.png)
+![2](https://github.com/joos-net/devops-diplom/blob/main/img/2.png)
+3. Подготовьте [backend](https://www.terraform.io/docs/language/settings/backends/index.html) для Terraform:  
    а. Рекомендуемый вариант: S3 bucket в созданном ЯО аккаунте(создание бакета через TF)
    б. Альтернативный вариант:  [Terraform Cloud](https://app.terraform.io/)  
-3. Создайте VPC с подсетями в разных зонах доступности.
-4. Убедитесь, что теперь вы можете выполнить команды `terraform destroy` и `terraform apply` без дополнительных ручных действий.
-5. В случае использования [Terraform Cloud](https://app.terraform.io/) в качестве [backend](https://www.terraform.io/docs/language/settings/backends/index.html) убедитесь, что применение изменений успешно проходит, используя web-интерфейс Terraform cloud.
+![3](https://github.com/joos-net/devops-diplom/blob/main/img/3.png)
+
+```tf
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+  required_version = ">= 0.13"
+
+    // сохраняем tfstate в s3 бакете
+    backend "s3" {
+    endpoint   = "storage.yandexcloud.net"
+    bucket     = "joos-netology"
+    region     = "ru-central1"
+    key        = "diplom-netology.tfstate"
+
+    skip_region_validation      = true
+    skip_metadata_api_check     = true
+    skip_credentials_validation = true
+    force_path_style            = true
+
+  }
+}
+
+```
+4. Создайте VPC с подсетями в разных зонах доступности.
+5. Убедитесь, что теперь вы можете выполнить команды `terraform destroy` и `terraform apply` без дополнительных ручных действий.
+6. В случае использования [Terraform Cloud](https://app.terraform.io/) в качестве [backend](https://www.terraform.io/docs/language/settings/backends/index.html) убедитесь, что применение изменений успешно проходит, используя web-интерфейс Terraform cloud.
+
+https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507726
+
+![4](https://github.com/joos-net/devops-diplom/blob/main/img/4.png)
+
+https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507733
+
+![5](https://github.com/joos-net/devops-diplom/blob/main/img/5.png)
 
 Ожидаемые результаты:
 
@@ -70,6 +107,16 @@
 2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
 
+https://gitlab.com/netjoos/diplom-infra/-/blob/main/k8s.tf?ref_type=heads
+
+https://gitlab.com/netjoos/diplom-infra/-/jobs/7501547350
+
+![6](https://github.com/joos-net/devops-diplom/blob/main/img/6.png)
+
+![7](https://github.com/joos-net/devops-diplom/blob/main/img/7.png)
+
+![8](https://github.com/joos-net/devops-diplom/blob/main/img/8.png)
+
 ---
 ### Создание тестового приложения
 
@@ -87,6 +134,10 @@
 
 1. Git репозиторий с тестовым приложением и Dockerfile.
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
+
+https://gitlab.com/netjoos/diplom-site
+
+https://hub.docker.com/r/jooos/netology-dip/tags
 
 ---
 ### Подготовка cистемы мониторинга и деплой приложения
@@ -108,6 +159,18 @@
 2. Http доступ к web интерфейсу grafana.
 3. Дашборды в grafana отображающие состояние Kubernetes кластера.
 4. Http доступ к тестовому приложению.
+
+https://gitlab.com/netjoos/diplom-infra
+
+https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507751
+
+![9](https://github.com/joos-net/devops-diplom/blob/main/img/9.png)
+
+![10](https://github.com/joos-net/devops-diplom/blob/main/img/10.png)
+
+![11](https://github.com/joos-net/devops-diplom/blob/main/img/11.png)
+
+![12](https://github.com/joos-net/devops-diplom/blob/main/img/12.png)
 
 ---
 ### Установка и настройка CI/CD

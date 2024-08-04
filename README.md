@@ -190,6 +190,20 @@ https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507751
 2. При любом коммите в репозиторие с тестовым приложением происходит сборка и отправка в регистр Docker образа.
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
 
+https://gitlab.com/netjoos/diplom-site
+
+https://gitlab.com/netjoos/diplom-site/-/pipelines/1400200202
+
+![13](https://github.com/joos-net/devops-diplom/blob/main/img/13.png)
+
+![14](https://github.com/joos-net/devops-diplom/blob/main/img/14.png)
+
+![15](https://github.com/joos-net/devops-diplom/blob/main/img/15.png)
+
+![16](https://github.com/joos-net/devops-diplom/blob/main/img/16.png)
+
+![17](https://github.com/joos-net/devops-diplom/blob/main/img/17.png)
+
 ---
 ## Что необходимо для сдачи задания?
 

@@ -24,7 +24,6 @@
 ---
 ## Этапы выполнения:
 
-
 ### Создание облачной инфраструктуры
 
 Для начала необходимо подготовить облачную инфраструктуру в ЯО при помощи [Terraform](https://www.terraform.io/).
@@ -36,12 +35,17 @@
 
 Предварительная подготовка к установке и запуску Kubernetes кластера.
 
+### Создал аккаунт diplom с правами для создания аккауна для кластера кубернетес в облаке и возможностью управлять Key Management Service. Так же создал необходимые ключи доступа
+
 1. Создайте сервисный аккаунт, который будет в дальнейшем использоваться Terraform для работы с инфраструктурой с необходимыми и достаточными правами. Не стоит использовать права суперпользователя
-![1](https://github.com/joos-net/devops-diplom/blob/main/img/01.png)
-![2](https://github.com/joos-net/devops-diplom/blob/main/img/2.png)
+![1](https://github.com/joos-net/devops-diplom/blob/main/img/001.png)
+![2](https://github.com/joos-net/devops-diplom/blob/main/img/002.png)
 3. Подготовьте [backend](https://www.terraform.io/docs/language/settings/backends/index.html) для Terraform:  
-   а. Рекомендуемый вариант: S3 bucket в созданном ЯО аккаунте(создание бакета через TF)
-   б. Альтернативный вариант:  [Terraform Cloud](https://app.terraform.io/)  
+   - Рекомендуемый вариант: S3 bucket в созданном ЯО аккаунте(создание бакета через TF)
+   - Альтернативный вариант:  [Terraform Cloud](https://app.terraform.io/)
+
+### Создал S3 bucket joos-netology
+
 ![3](https://github.com/joos-net/devops-diplom/blob/main/img/3.png)
 
 ```tf
@@ -73,13 +77,22 @@ terraform {
 5. Убедитесь, что теперь вы можете выполнить команды `terraform destroy` и `terraform apply` без дополнительных ручных действий.
 6. В случае использования [Terraform Cloud](https://app.terraform.io/) в качестве [backend](https://www.terraform.io/docs/language/settings/backends/index.html) убедитесь, что применение изменений успешно проходит, используя web-интерфейс Terraform cloud.
 
-https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507726
+
+### Валидация проходит успешно
+**https://gitlab.com/netjoos/diplom-infra/-/jobs/7529075077**
 
 ![4](https://github.com/joos-net/devops-diplom/blob/main/img/4.png)
 
-https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507733
+### План проходит успешно
+**https://gitlab.com/netjoos/diplom-infra/-/jobs/7529075080**
 
 ![5](https://github.com/joos-net/devops-diplom/blob/main/img/5.png)
+
+### Применение проходит успешно
+**https://gitlab.com/netjoos/diplom-infra/-/jobs/7529075084**
+
+![05](https://github.com/joos-net/devops-diplom/blob/main/img/005.png)
+
 
 Ожидаемые результаты:
 
@@ -107,11 +120,16 @@ https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507733
 2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
 
-https://gitlab.com/netjoos/diplom-infra/-/blob/main/k8s.tf?ref_type=heads
 
-https://gitlab.com/netjoos/diplom-infra/-/jobs/7501547350
+### После выполнения шага apply кластер развернут и работоспособен
 
-![6](https://github.com/joos-net/devops-diplom/blob/main/img/6.png)
+**https://gitlab.com/netjoos/diplom-infra/-/pipelines/1404622851**
+
+**https://gitlab.com/netjoos/diplom-infra/-/blob/main/k8s.tf?ref_type=heads**
+
+**https://gitlab.com/netjoos/diplom-infra/-/jobs/7529075084**
+
+![6](https://github.com/joos-net/devops-diplom/blob/main/img/06.png)
 
 ![7](https://github.com/joos-net/devops-diplom/blob/main/img/7.png)
 
@@ -135,9 +153,26 @@ https://gitlab.com/netjoos/diplom-infra/-/jobs/7501547350
 1. Git репозиторий с тестовым приложением и Dockerfile.
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
 
-https://gitlab.com/netjoos/diplom-site
 
-https://hub.docker.com/r/jooos/netology-dip/tags
+### Git репозиторий
+
+**https://gitlab.com/netjoos/diplom-site**
+
+
+### Dockerfile
+
+```Dockerfile
+FROM nginx
+RUN rm -rf /usr/share/nginx/html/*
+COPY source/ /usr/share/nginx/html/
+EXPOSE 80
+```
+
+### DockerHub c образами
+
+**https://hub.docker.com/r/jooos/netology-dip/tags**
+
+![08](https://github.com/joos-net/devops-diplom/blob/main/img/08.png)
 
 ---
 ### Подготовка cистемы мониторинга и деплой приложения
@@ -160,13 +195,25 @@ https://hub.docker.com/r/jooos/netology-dip/tags
 3. Дашборды в grafana отображающие состояние Kubernetes кластера.
 4. Http доступ к тестовому приложению.
 
-https://gitlab.com/netjoos/diplom-infra
 
-https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507751
+### Git репозиторий для создания инфраструктуры, ее дальнейшей настройкой и удалением.
+**https://gitlab.com/netjoos/diplom-infra**
 
-![9](https://github.com/joos-net/devops-diplom/blob/main/img/9.png)
+### Настройка инфраструктуры
+**https://gitlab.com/netjoos/diplom-infra/-/jobs/7529075087**
 
-![10](https://github.com/joos-net/devops-diplom/blob/main/img/10.png)
+
+### После успешной настройки получаем рабочий сайт и мониторинг
+
+![09](https://github.com/joos-net/devops-diplom/blob/main/img/09.png)
+
+![9](https://github.com/joos-net/devops-diplom/blob/main/img/009.png)
+
+**[https://app.jo-os.ru](https://app.jo-os.ru)**
+
+![10](https://github.com/joos-net/devops-diplom/blob/main/img/010.png)
+
+**[https://monitoring.jo-os.ru](https://monitoring.jo-os.ru)**
 
 ![11](https://github.com/joos-net/devops-diplom/blob/main/img/11.png)
 
@@ -190,19 +237,48 @@ https://gitlab.com/netjoos/diplom-infra/-/jobs/7501507751
 2. При любом коммите в репозиторие с тестовым приложением происходит сборка и отправка в регистр Docker образа.
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
 
-https://gitlab.com/netjoos/diplom-site
+### Git репозиторий сайта
 
-https://gitlab.com/netjoos/diplom-site/-/pipelines/1400200202
+**https://gitlab.com/netjoos/diplom-site**
 
-![13](https://github.com/joos-net/devops-diplom/blob/main/img/13.png)
+### Меняем старую подпись
 
-![14](https://github.com/joos-net/devops-diplom/blob/main/img/14.png)
+![13](https://github.com/joos-net/devops-diplom/blob/main/img/013.png)
 
-![15](https://github.com/joos-net/devops-diplom/blob/main/img/15.png)
+### Видим успешную сборку и отправку
 
-![16](https://github.com/joos-net/devops-diplom/blob/main/img/16.png)
+**https://gitlab.com/netjoos/diplom-site/-/jobs/7529276052**
 
-![17](https://github.com/joos-net/devops-diplom/blob/main/img/17.png)
+![14](https://github.com/joos-net/devops-diplom/blob/main/img/014.png)
+
+**https://gitlab.com/netjoos/diplom-site/-/pipelines/1404652095**
+
+![15](https://github.com/joos-net/devops-diplom/blob/main/img/0015.png)
+
+https://hub.docker.com/r/jooos/netology-dip/tags
+
+![16](https://github.com/joos-net/devops-diplom/blob/main/img/016.png)
+
+### Видим изменения на сайте
+
+![17](https://github.com/joos-net/devops-diplom/blob/main/img/017.png)
+
+### Создадим Tag 2.0
+
+![18](https://github.com/joos-net/devops-diplom/blob/main/img/18.png)
+
+### Ждем выполнения работы пайплайна
+
+**https://gitlab.com/netjoos/diplom-site/-/pipelines/1404667136**
+
+![19](https://github.com/joos-net/devops-diplom/blob/main/img/19.png)
+
+**https://hub.docker.com/r/jooos/netology-dip/tags**
+
+![20](https://github.com/joos-net/devops-diplom/blob/main/img/20.png)
+
+![21](https://github.com/joos-net/devops-diplom/blob/main/img/21.png)
+
 
 ---
 ## Что необходимо для сдачи задания?
